@@ -1,0 +1,402 @@
+//Programer: Connice Trimminham
+//Project: Lab6-1
+//Date: 7/15/2019
+//Description: form load for Hopkins Flim School
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.IO;  //gen
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Trimmingham_4
+{
+    public partial class RegistrationForm : Form
+    {
+        //declare class variables
+        private int userSelect = 0;
+        private decimal orderTotal;
+        private int count = 0;
+
+        //declare class constants
+        private const decimal LIVE_CLASS = 79.95m;
+        private const decimal ANIMATED_CLASS = 99.95m;
+        private const int MAX_CLASSES = 4;
+        private int i;
+
+        public RegistrationForm()
+
+
+        {
+            InitializeComponent();
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+        //execute immediately when program starts 
+        private void RegistrationForm_Load(object sender, EventArgs e)
+        {
+            PopulateLists();//call populateLists method
+            UpdateTotals(); //call UpdateTotals method
+
+            //display current date by system clock in reg date masked box 
+            regdatemaskedTextBox.Text = DateTime.Now.ToString("MM/dd/yyyy");
+
+            //create array and load it to the comboBox
+            String[] statusArray = { "Actor", "Producer", "Director", "Animator", "Cinematographer", "Drama Teacher", "Light Technician", "Sound Technician" };
+
+            for (int i = 0; i < statusArray.Length; i++)
+            {
+                statuscomboBox.Items.Add(statusArray[i]);
+            }
+        }
+
+
+        private void PopulateLists()
+        {
+            try
+            {
+                classeslistBox.Items.Clear();
+
+                StreamReader inputFile; //create stream reader variable
+
+                if (liveactionradioButton.Checked)
+                {
+                    inputFile = File.OpenText("LiveActionClasses.txt");
+
+                    //read in all lines from text
+                    while (!inputFile.EndOfStream)
+                    {
+                        classeslistBox.Items.Add(inputFile.ReadLine());
+                    }
+
+                    inputFile.Close();//close file
+                }
+                else
+                {
+
+                    inputFile = File.OpenText("AnimationClasses.txt");
+
+                    //read in all lines from text
+                    while (!inputFile.EndOfStream)
+                    {
+                        classeslistBox.Items.Add(inputFile.ReadLine());
+                    }
+
+                    inputFile.Close();//close file
+                }
+            }
+            catch (Exception ex)
+
+            {
+                //display message if error occurs when attempting to readfile
+                MessageBox.Show(ex.Message);
+            }
+
+
+        }
+
+        private void UpdateTotals()
+        {
+            try
+            {
+
+                count = 0;
+                userSelect = 0;
+                //get total number of classes selected by user, and make sure classes is not greater than 4
+                for (int i = 0; i < classeslistBox.Items.Count; i++)
+                {
+                    if (count > 1 || count < MAX_CLASSES)
+
+                        if (classeslistBox.GetSelected(i))
+                        {
+                            count++; //only counts until 4
+                        }
+
+                    if (classeslistBox.GetSelected(i))
+                    {
+                        userSelect++; // count selections made by user
+                    }
+
+                    else
+                    {
+
+                    }
+
+                    //display cost per course based off of radioButton selected
+                    if (liveactionradioButton.Checked)
+                    {
+                        priceperclassLabel.Text = LIVE_CLASS.ToString("c");
+                        orderTotal = count * LIVE_CLASS;
+                    }
+                    else
+                    {
+                        priceperclassLabel.Text = ANIMATED_CLASS.ToString("c");
+                        orderTotal = count * ANIMATED_CLASS;
+                    }
+
+                    numofclassLabel.Text = count.ToString();
+
+
+                    //display total 
+                    totalLabel.Text = orderTotal.ToString("c");
+                }
+            }
+            catch (Exception ex)
+            {
+                //display message if error occurs when attemption to write file 
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void ResetForm() //reset form back to start up form
+        {
+            try
+            {
+                regdatemaskedTextBox.Text = DateTime.Now.ToString("MM/dd/yyyy");
+                firstnametextBox.Text = "";
+                lastnametextBox.Text = "";
+                emailtextBox.Text = "";
+                dobmaskedTextBox.Text = "";
+                statuscomboBox.SelectedIndex = -1;
+                classeslistBox.ClearSelected();
+                liveactionradioButton.Checked = true;
+                cashradioButton.Checked = true;
+                recieptcheckBox.Checked = false;
+                numofclassLabel.Text = "0";
+                priceperclassLabel.Text = "$0.00";
+                totalLabel.Text = "$0.00";
+            }
+            catch (Exception ex)
+
+            {
+                //display message if error occurs when attempting to readfile
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void liveactionradioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            PopulateLists();
+            UpdateTotals();
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label13_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void fileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //create and intialize string variables
+            string firstName = "";
+            string email = "";
+            string dob = "";
+            string registerDate = "";
+            string status = "";
+            string classType = "";
+            string classList = "";
+            string payment = "";
+            string receipt = "";
+            string lastName = "";
+
+            //give values to string 
+            status = statuscomboBox.SelectedIndex.ToString();
+            registerDate = regdatemaskedTextBox.Text;
+            firstName = firstnametextBox.Text;
+            lastName = lastnametextBox.Text;
+            email = emailtextBox.Text;
+            dob = dobmaskedTextBox.Text;
+            classList = classeslistBox.Items[i].ToString() + "\n";
+
+
+            //check to see if first and last name and email have been entered 
+
+            if (string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName) || string.IsNullOrEmpty(email))
+            {
+                //write message if if statment is true
+                MessageBox.Show("You need to enter your first and last name, Date of Birth and your email!", "Incorrect Information!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            else if (count <= 1 || count >= MAX_CLASSES) //check how many selections user made
+            {
+                MessageBox.Show("One to Four Classes are Required, please ensure your selection is with range ", "!" + " Number ofclases Allowed.", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            else
+            { 
+
+                try
+                {
+                    StreamWriter outputFile; //declare streamwriter object for use in writing file
+                    outputFile = File.AppendText("RegistrationData.txt"); //append file to write in data
+
+                    outputFile.WriteLine(DateTime.Now.ToString("MM/dd/yyyy")); //current data to file
+                    outputFile.WriteLine("Registration Summary"); // take user entries and write into file
+                    outputFile.WriteLine(registerDate);
+                    outputFile.WriteLine(firstName + " " + lastName);
+                    outputFile.WriteLine(email);
+                    outputFile.WriteLine(dob);
+                    outputFile.WriteLine(status);
+                    outputFile.WriteLine(classType);
+
+                    //for loop goes through listbox and finds which items were selected
+                    for (int i = 0; i < classeslistBox.Items.Count; i++)
+                    {
+
+
+                        if (count < MAX_CLASSES)
+                        {
+                            if (classeslistBox.GetSelected(i))
+                            {
+                                outputFile.WriteLine(classeslistBox.Items[i]); // write to file
+
+                            }
+                        }
+                    }
+                    //write into registrationdata.txt
+
+                    outputFile.WriteLine(numofclassLabel.Text);
+                    outputFile.WriteLine(priceperclassLabel.Text);
+                    outputFile.WriteLine(totalLabel.Text);
+                    outputFile.WriteLine(payment);
+                    outputFile.WriteLine(receipt);
+
+                    //write new line to seperate form
+
+                    outputFile.WriteLine("\n");
+                    outputFile.Close(); // close text
+
+
+                    //check radiobutton and assign payment string
+                    if (cashradioButton.Checked)
+                    {
+                        payment = "Cash";
+                    }
+                    else
+                    {
+                        payment = "Check";
+                    }
+
+                    //check if checkbox is checked
+                    if (recieptcheckBox.Checked)
+                    {
+                        receipt = "Yes";
+                    }
+                    else
+                    {
+                        receipt = "No";
+                    }
+
+                    //check radiobutton and assign string values
+                    if (liveactionradioButton.Checked)
+                    {
+                        classType = "Live Action";
+
+                    }
+                    else
+                    {
+                        classType = "Animation";
+                    }
+
+
+                    MessageBox.Show("Registration Date: " + registerDate + "\n" +
+                          "Name: " + firstName + " " + lastName + "\n" +
+                        "Email Address: " + email + "\n" +
+                         "Date of Birth: " + dob + "\n" +
+                        "Status: " + status + "\n" +
+                        "Classes Selected: " + classList +
+                        "Number of Classes: " + numofclassLabel.Text + "\n" +
+                         "Price per Class: " + priceperclassLabel.Text + "\n" +
+                           "Order Total: " + totalLabel.Text + "\n" +
+                           "Payment Type: " + payment + "\n" +
+                         "Receipt? " + receipt, "Registration Summary", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+
+                    ResetForm(); //call resetform method
+
+
+                }
+
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+        }
+
+            }
+      
+
+    
+
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //create Dialog Result variable
+            DialogResult selection;
+
+            //Display message box with yes no questions, question icon
+            selection = MessageBox.Show("Are you sure you want to quit?", "Exit", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            //check if user selected yes, if so, close program
+            if (selection == DialogResult.Yes)
+            {
+                this.Close();
+            }
+
+        }
+
+        private void aboutUsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //make AboutForm variable, calling aboutform class
+            AboutForm myAboutForm = new AboutForm();
+
+            //show dialog using myAboutForm
+            myAboutForm.ShowDialog();
+        }
+
+        private void clearToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ResetForm();
+        }
+
+        private void annimationradioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateTotals();
+            PopulateLists();
+        }
+
+        private void classeslistBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateTotals();
+        }
+    }
+}
